@@ -514,14 +514,14 @@ pub mod builder {
     #[derive(Debug, Clone)]
     pub struct SearchTodos<'a> {
         client: &'a super::Client,
-        value: Result<String, String>,
+        value: Result<Option<String>, String>,
     }
 
     impl<'a> SearchTodos<'a> {
         pub fn new(client: &'a super::Client) -> Self {
             Self {
                 client,
-                value: Err("value was not initialized".to_string()),
+                value: Ok(None),
             }
         }
 
@@ -531,6 +531,7 @@ pub mod builder {
         {
             self.value = value
                 .try_into()
+                .map(Some)
                 .map_err(|_| "conversion to `String` for value failed".to_string());
             self
         }
@@ -541,7 +542,9 @@ pub mod builder {
             let value = value.map_err(Error::InvalidRequest)?;
             let url = format!("{}/todo/search", client.baseurl,);
             let mut query = Vec::with_capacity(1usize);
-            query.push(("value", value.to_string()));
+            if let Some(v) = &value {
+                query.push(("value", v.to_string()));
+            }
             let request = client
                 .client
                 .get(url)

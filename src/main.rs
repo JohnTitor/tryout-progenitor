@@ -14,7 +14,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let todo1 = client
         .create_todo()
         .body(types::Todo {
-            id: 1,
+            id: 10,
             value: "Write a blog post".to_string(),
             checked: false,
         })
@@ -25,13 +25,20 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let todo2 = client
         .create_todo()
         .body(&types::Todo {
-            id: 2,
+            id: 20,
             value: "Attend a daily standup".to_string(),
             checked: false,
         })
         .send()
         .await?;
     println!("todo1: {todo2:?}");
+
+    let todo_search = client
+        .search_todos()
+        .send()
+        .await?
+        .into_inner();
+    println!("todo_search: {todo_search:?}");
 
     let todo_list = client.get_todos().send().await?;
     println!("todo list: {todo_list:?}");
