@@ -6,7 +6,7 @@ use actix_web::{
     HttpResponse, Responder,
 };
 use serde::{Deserialize, Serialize};
-use utoipa::{ToSchema, IntoParams};
+use utoipa::{IntoParams, ToSchema};
 
 use crate::{LogApiKey, RequireApiKey};
 
@@ -112,7 +112,7 @@ pub(super) async fn create_todo(todo: Json<Todo>, todo_store: Data<TodoStore>) -
         .unwrap_or_else(|| {
             todos.push(todo.clone());
 
-            HttpResponse::Ok().json(todo)
+            HttpResponse::Created().json(todo)
         })
 }
 

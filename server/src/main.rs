@@ -80,8 +80,8 @@ async fn main() -> Result<(), impl Error> {
             // There is no need to create RapiDoc::with_openapi because the OpenApi is served
             // via SwaggerUi instead we only make rapidoc to point to the existing doc.
             .service(RapiDoc::new("/api-docs/openapi.json").path("/rapidoc"))
-            // Alternative to above
-            // .service(RapiDoc::with_openapi("/api-docs/openapi2.json", openapi.clone()).path("/rapidoc"))
+        // Alternative to above
+        // .service(RapiDoc::with_openapi("/api-docs/openapi2.json", openapi.clone()).path("/rapidoc"))
     })
     .bind((Ipv4Addr::UNSPECIFIED, 8080))?
     .run()
