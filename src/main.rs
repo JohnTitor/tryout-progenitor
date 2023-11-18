@@ -1,11 +1,9 @@
-pub use reqwest::Client;
+include!(concat!(env!("OUT_DIR"), "/codegen.rs"));
 
 const API_KEY: &str = "utoipa-rocks";
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
-    progenitor::generate_api!("./docs/openapi.json");
-
     let mut headers = reqwest::header::HeaderMap::new();
     headers.insert("todo_apikey", API_KEY.parse().unwrap());
     let default_client = reqwest::ClientBuilder::new()
