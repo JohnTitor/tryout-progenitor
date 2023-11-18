@@ -1,4 +1,4 @@
-include!(concat!(env!("OUT_DIR"), "/codegen.rs"));
+use actix_todo::{types, Client};
 
 const API_KEY: &str = "utoipa-rocks";
 

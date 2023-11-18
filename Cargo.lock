@@ -120,6 +120,18 @@ dependencies = [
 ]
 
 [[package]]
+name = "actix-todo"
+version = "0.1.0"
+dependencies = [
+ "bytes",
+ "futures-core",
+ "progenitor-client 0.4.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "reqwest",
+ "serde",
+ "serde_urlencoded",
+]
+
+[[package]]
 name = "actix-utils"
 version = "3.0.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1207,10 +1219,25 @@ name = "progenitor"
 version = "0.4.0"
 source = "git+https://github.com/oxidecomputer/progenitor#9339b57628e1e76b1d7131ef93a6c0db2ab0a762"
 dependencies = [
- "progenitor-client",
+ "progenitor-client 0.4.0 (git+https://github.com/oxidecomputer/progenitor)",
  "progenitor-impl",
  "progenitor-macro",
  "serde_json",
+]
+
+[[package]]
+name = "progenitor-client"
+version = "0.4.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "d1a417d3df3a3e14dce4d7f06ab0e7b9cc5d8931a398d6cf00449ad7ab75405f"
+dependencies = [
+ "bytes",
+ "futures-core",
+ "percent-encoding",
+ "reqwest",
+ "serde",
+ "serde_json",
+ "serde_urlencoded",
 ]
 
 [[package]]
@@ -1941,10 +1968,11 @@ checksum = "3528ecfd12c466c6f163363caf2d02a71161dd5e1cc6ae7b34207ea2d42d81ed"
 name = "tryout-progenitor"
 version = "0.1.0"
 dependencies = [
+ "actix-todo",
  "futures",
  "prettyplease",
  "progenitor",
- "progenitor-client",
+ "progenitor-client 0.4.0 (git+https://github.com/oxidecomputer/progenitor)",
  "reqwest",
  "serde",
  "serde_json",
