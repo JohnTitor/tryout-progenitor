@@ -12,30 +12,34 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let client = Client::new_with_client("http://localhost:8080", default_client);
 
     let todo1 = client
-        .create_todo(&types::Todo {
-            id: 10,
-            value: "Eat breakfast".to_string(),
-            checked: true,
+        .create_todo()
+        .body(types::Todo {
+            id: 1,
+            value: "Write a blog post".to_string(),
+            checked: false,
         })
+        .send()
         .await?;
     println!("todo1: {todo1:?}");
 
     let todo2 = client
-        .create_todo(&types::Todo {
-            id: 20,
+        .create_todo()
+        .body(&types::Todo {
+            id: 2,
             value: "Attend a daily standup".to_string(),
             checked: false,
         })
+        .send()
         .await?;
     println!("todo1: {todo2:?}");
 
-    let todo_list = client.get_todos().await?;
+    let todo_list = client.get_todos().send().await?;
     println!("todo list: {todo_list:?}");
     for todo in todo_list.into_inner() {
-        client.delete_todo(todo.id).await?;
+        client.delete_todo().id(todo.id).send().await?;
     }
 
-    let todo_list = client.get_todos().await?;
+    let todo_list = client.get_todos().send().await?;
     if todo_list.into_inner().is_empty() {
         println!("All todos deleted successfully");
     } else {
