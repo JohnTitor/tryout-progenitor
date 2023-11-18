@@ -1,4 +1,4 @@
-use actix_todo::{types, Client};
+use actix_todo::{types, ClientTodoExt, Client};
 
 const API_KEY: &str = "utoipa-rocks";
 

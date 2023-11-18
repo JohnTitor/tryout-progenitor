@@ -260,7 +260,7 @@ impl Client {
     }
 }
 
-impl Client {
+pub trait ClientTodoExt {
     ///Get list of todos
     ///
     ///Get list of todos.
@@ -279,10 +279,7 @@ impl Client {
     ///    .send()
     ///    .await;
     /// ```
-    pub fn get_todos(&self) -> builder::GetTodos {
-        builder::GetTodos::new(self)
-    }
-
+    fn get_todos(&self) -> builder::GetTodos;
     ///Create new Todo to shared in-memory storage
     ///
     ///Create new Todo to shared in-memory storage.
@@ -304,10 +301,7 @@ impl Client {
     ///    .send()
     ///    .await;
     /// ```
-    pub fn create_todo(&self) -> builder::CreateTodo {
-        builder::CreateTodo::new(self)
-    }
-
+    fn create_todo(&self) -> builder::CreateTodo;
     ///Search Todos with by value
     ///
     ///Search Todos with by value
@@ -326,10 +320,7 @@ impl Client {
     ///    .send()
     ///    .await;
     /// ```
-    pub fn search_todos(&self) -> builder::SearchTodos {
-        builder::SearchTodos::new(self)
-    }
-
+    fn search_todos(&self) -> builder::SearchTodos;
     ///Get Todo by given todo id
     ///
     ///Get Todo by given todo id.
@@ -347,10 +338,7 @@ impl Client {
     ///    .send()
     ///    .await;
     /// ```
-    pub fn get_todo_by_id(&self) -> builder::GetTodoById {
-        builder::GetTodoById::new(self)
-    }
-
+    fn get_todo_by_id(&self) -> builder::GetTodoById;
     ///Update Todo with given id
     ///
     ///Update Todo with given id.
@@ -374,10 +362,7 @@ impl Client {
     ///    .send()
     ///    .await;
     /// ```
-    pub fn update_todo(&self) -> builder::UpdateTodo {
-        builder::UpdateTodo::new(self)
-    }
-
+    fn update_todo(&self) -> builder::UpdateTodo;
     ///Delete Todo by given path variable id
     ///
     ///Delete Todo by given path variable id.
@@ -399,7 +384,31 @@ impl Client {
     ///    .send()
     ///    .await;
     /// ```
-    pub fn delete_todo(&self) -> builder::DeleteTodo {
+    fn delete_todo(&self) -> builder::DeleteTodo;
+}
+
+impl ClientTodoExt for Client {
+    fn get_todos(&self) -> builder::GetTodos {
+        builder::GetTodos::new(self)
+    }
+
+    fn create_todo(&self) -> builder::CreateTodo {
+        builder::CreateTodo::new(self)
+    }
+
+    fn search_todos(&self) -> builder::SearchTodos {
+        builder::SearchTodos::new(self)
+    }
+
+    fn get_todo_by_id(&self) -> builder::GetTodoById {
+        builder::GetTodoById::new(self)
+    }
+
+    fn update_todo(&self) -> builder::UpdateTodo {
+        builder::UpdateTodo::new(self)
+    }
+
+    fn delete_todo(&self) -> builder::DeleteTodo {
         builder::DeleteTodo::new(self)
     }
 }
@@ -410,9 +419,9 @@ pub mod builder {
     use super::{
         encode_path, ByteStream, Error, HeaderMap, HeaderValue, RequestBuilderExt, ResponseValue,
     };
-    ///Builder for [`Client::get_todos`]
+    ///Builder for [`ClientTodoExt::get_todos`]
     ///
-    ///[`Client::get_todos`]: super::Client::get_todos
+    ///[`ClientTodoExt::get_todos`]: super::ClientTodoExt::get_todos
     #[derive(Debug, Clone)]
     pub struct GetTodos<'a> {
         client: &'a super::Client,
@@ -444,9 +453,9 @@ pub mod builder {
         }
     }
 
-    ///Builder for [`Client::create_todo`]
+    ///Builder for [`ClientTodoExt::create_todo`]
     ///
-    ///[`Client::create_todo`]: super::Client::create_todo
+    ///[`ClientTodoExt::create_todo`]: super::ClientTodoExt::create_todo
     #[derive(Debug, Clone)]
     pub struct CreateTodo<'a> {
         client: &'a super::Client,
@@ -508,9 +517,9 @@ pub mod builder {
         }
     }
 
-    ///Builder for [`Client::search_todos`]
+    ///Builder for [`ClientTodoExt::search_todos`]
     ///
-    ///[`Client::search_todos`]: super::Client::search_todos
+    ///[`ClientTodoExt::search_todos`]: super::ClientTodoExt::search_todos
     #[derive(Debug, Clone)]
     pub struct SearchTodos<'a> {
         client: &'a super::Client,
@@ -563,9 +572,9 @@ pub mod builder {
         }
     }
 
-    ///Builder for [`Client::get_todo_by_id`]
+    ///Builder for [`ClientTodoExt::get_todo_by_id`]
     ///
-    ///[`Client::get_todo_by_id`]: super::Client::get_todo_by_id
+    ///[`ClientTodoExt::get_todo_by_id`]: super::ClientTodoExt::get_todo_by_id
     #[derive(Debug, Clone)]
     pub struct GetTodoById<'a> {
         client: &'a super::Client,
@@ -615,9 +624,9 @@ pub mod builder {
         }
     }
 
-    ///Builder for [`Client::update_todo`]
+    ///Builder for [`ClientTodoExt::update_todo`]
     ///
-    ///[`Client::update_todo`]: super::Client::update_todo
+    ///[`ClientTodoExt::update_todo`]: super::ClientTodoExt::update_todo
     #[derive(Debug, Clone)]
     pub struct UpdateTodo<'a> {
         client: &'a super::Client,
@@ -694,9 +703,9 @@ pub mod builder {
         }
     }
 
-    ///Builder for [`Client::delete_todo`]
+    ///Builder for [`ClientTodoExt::delete_todo`]
     ///
-    ///[`Client::delete_todo`]: super::Client::delete_todo
+    ///[`ClientTodoExt::delete_todo`]: super::ClientTodoExt::delete_todo
     #[derive(Debug, Clone)]
     pub struct DeleteTodo<'a> {
         client: &'a super::Client,
@@ -751,5 +760,6 @@ pub mod builder {
 }
 
 pub mod prelude {
-    pub use self::super::Client;
+    pub use super::Client;
+    pub use super::ClientTodoExt;
 }
