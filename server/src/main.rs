@@ -65,6 +65,8 @@ async fn main() -> Result<(), impl Error> {
     let store = Data::new(TodoStore::default());
     // Make instance variable of ApiDoc so all worker threads gets the same instance.
     let openapi = ApiDoc::openapi();
+    // Generate OpenAPI doc on startup.
+    std::fs::write("../docs/openapi.json", openapi.to_pretty_json().unwrap()).unwrap();
 
     HttpServer::new(move || {
         // This factory closure is called on each worker thread independently.
