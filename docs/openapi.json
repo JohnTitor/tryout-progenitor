@@ -1,0 +1,386 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "todo-actix",
+    "description": "Simple actix-web todo example api with utoipa and Swagger UI and Redoc",
+    "contact": {
+      "name": "Example",
+      "email": "example@example.com"
+    },
+    "license": {
+      "name": "MIT"
+    },
+    "version": "0.1.0"
+  },
+  "paths": {
+    "/todo": {
+      "get": {
+        "tags": [
+          "todo"
+        ],
+        "summary": "Get list of todos.",
+        "description": "Get list of todos.\n\nList todos from in-memory todo store.\n\nOne could call the api endpoint with following curl.\n```text\ncurl localhost:8080/todo\n```",
+        "operationId": "get_todos",
+        "responses": {
+          "200": {
+            "description": "List current todo items",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Todo"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "todo"
+        ],
+        "summary": "Create new Todo to shared in-memory storage.",
+        "description": "Create new Todo to shared in-memory storage.\n\nPost a new `Todo` in request body as json to store it. Api will return\ncreated `Todo` on success or `ErrorResponse::Conflict` if todo with same id already exists.\n\nOne could call the api with.\n```text\ncurl localhost:8080/todo -d '{\"id\": 1, \"value\": \"Buy movie ticket\", \"checked\": false}'\n```",
+        "operationId": "create_todo",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Todo"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Todo created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Todo"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Todo with id already exists",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "Conflict": "id = 1"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/todo/search": {
+      "get": {
+        "tags": [
+          "todo"
+        ],
+        "summary": "Search Todos with by value",
+        "description": "Search Todos with by value\n\nPerform search from `Todo`s present in in-memory storage by matching Todo's value to\nvalue provided as query parameter. Returns 200 and matching `Todo` items.",
+        "operationId": "search_todos",
+        "parameters": [
+          {
+            "name": "value",
+            "in": "query",
+            "description": "Content that should be found from Todo's value field",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Search Todos did not result error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Todo"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/todo/{id}": {
+      "get": {
+        "tags": [
+          "todo"
+        ],
+        "summary": "Get Todo by given todo id.",
+        "description": "Get Todo by given todo id.\n\nReturn found `Todo` with status 200 or 404 not found if `Todo` is not found from shared in-memory storage.",
+        "operationId": "get_todo_by_id",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Unique storage id of Todo",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Todo found from storage",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Todo"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Todo not found by id",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "NotFound": "id = 1"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "todo"
+        ],
+        "summary": "Update Todo with given id.",
+        "description": "Update Todo with given id.\n\nThis endpoint supports optional authentication.\n\nTries to update `Todo` by given id as path variable. If todo is found by id values are\nupdated according `TodoUpdateRequest` and updated `Todo` is returned with status 200.\nIf todo is not found then 404 not found is returned.",
+        "operationId": "update_todo",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Unique storage id of Todo",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TodoUpdateRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Todo updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Todo"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Todo not found by id",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "NotFound": "id = 1"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {},
+          {
+            "api_key": []
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "todo"
+        ],
+        "summary": "Delete Todo by given path variable id.",
+        "description": "Delete Todo by given path variable id.\n\nThis endpoint needs `api_key` authentication in order to call. Api key can be found from README.md.\n\nApi will delete todo from shared in-memory storage by the provided id and return success 200.\nIf storage does not contain `Todo` with given id 404 not found will be returned.",
+        "operationId": "delete_todo",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Unique storage id of Todo",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Todo deleted successfully"
+          },
+          "401": {
+            "description": "Unauthorized to delete Todo",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "Unauthorized": "missing api key"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Todo not found by id",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "NotFound": "id = 1"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "api_key": []
+          }
+        ]
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "ErrorResponse": {
+        "oneOf": [
+          {
+            "type": "object",
+            "required": [
+              "NotFound"
+            ],
+            "properties": {
+              "NotFound": {
+                "type": "string",
+                "description": "When Todo is not found by search term."
+              }
+            }
+          },
+          {
+            "type": "object",
+            "required": [
+              "Conflict"
+            ],
+            "properties": {
+              "Conflict": {
+                "type": "string",
+                "description": "When there is a conflict storing a new todo."
+              }
+            }
+          },
+          {
+            "type": "object",
+            "required": [
+              "Unauthorized"
+            ],
+            "properties": {
+              "Unauthorized": {
+                "type": "string",
+                "description": "When todo endpoint was called without correct credentials"
+              }
+            }
+          }
+        ],
+        "description": "Todo endpoint error responses"
+      },
+      "Todo": {
+        "type": "object",
+        "description": "Task to do.",
+        "required": [
+          "id",
+          "value",
+          "checked"
+        ],
+        "properties": {
+          "checked": {
+            "type": "boolean",
+            "description": "Mark is the task done or not"
+          },
+          "id": {
+            "type": "integer",
+            "format": "int32",
+            "description": "Unique id for the todo item.",
+            "example": 1
+          },
+          "value": {
+            "type": "string",
+            "description": "Description of the tasks to do.",
+            "example": "Remember to buy groceries"
+          }
+        }
+      },
+      "TodoUpdateRequest": {
+        "type": "object",
+        "description": "Request to update existing `Todo` item.",
+        "properties": {
+          "checked": {
+            "type": "boolean",
+            "description": "Optional check status to mark is the task done or not.",
+            "nullable": true
+          },
+          "value": {
+            "type": "string",
+            "description": "Optional new value for the `Todo` task.",
+            "example": "Dentist at 14.00",
+            "nullable": true
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "api_key": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "todo_apikey"
+      }
+    }
+  },
+  "tags": [
+    {
+      "name": "todo",
+      "description": "Todo management endpoints."
+    }
+  ]
+}
