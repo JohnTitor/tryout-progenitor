@@ -94,9 +94,10 @@
             "name": "value",
             "in": "query",
             "description": "Content that should be found from Todo's value field",
-            "required": true,
+            "required": false,
             "schema": {
-              "type": "string"
+              "type": "string",
+              "nullable": true
             }
           }
         ],

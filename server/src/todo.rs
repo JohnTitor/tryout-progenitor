@@ -233,7 +233,7 @@ pub(super) async fn update_todo(
 #[derive(Deserialize, Debug, IntoParams)]
 pub(super) struct SearchTodos {
     /// Content that should be found from Todo's value field
-    value: String,
+    value: Option<String>,
 }
 
 /// Search Todos with by value
@@ -261,7 +261,7 @@ pub(super) async fn search_todos(
             .filter(|todo| {
                 todo.value
                     .to_lowercase()
-                    .contains(&query.value.to_lowercase())
+                    .contains(&query.value.as_ref().unwrap_or(&String::new()).to_lowercase())
             })
             .cloned()
             .collect::<Vec<_>>(),
